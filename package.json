@@ -1,0 +1,47 @@
+{
+  "name": "@talonsight/ontology",
+  "version": "1.0.0",
+  "description": "PCOMJR data ontology — types, constraints, and validation for the TalonSight Organizational Intelligence Platform",
+  "author": "TalonSight Technologies",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./constraints": {
+      "types": "./dist/constraints.d.ts",
+      "import": "./dist/constraints.js"
+    },
+    "./oias": {
+      "types": "./dist/oias-types.d.ts",
+      "import": "./dist/oias-types.js"
+    },
+    "./oias/constraints": {
+      "types": "./dist/oias-constraints.d.ts",
+      "import": "./dist/oias-constraints.js"
+    }
+  },
+  "files": [
+    "dist",
+    "terminal-registry.json",
+    "pcomjr-context.jsonld",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx constraints.test.ts && tsx oias-constraints.test.ts",
+    "test:base": "tsx constraints.test.ts",
+    "test:oias": "tsx oias-constraints.test.ts",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}

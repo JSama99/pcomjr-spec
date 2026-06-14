@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "."
+  },
+  "include": [
+    "index.ts",
+    "pcomjr-types.ts",
+    "constraints.ts",
+    "oias-types.ts",
+    "oias-constraints.ts"
+  ],
+  "exclude": ["*.test.ts", "node_modules", "dist"]
+}

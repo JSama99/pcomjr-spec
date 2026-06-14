@@ -1,0 +1,148 @@
+{
+  "@context": {
+    "@vocab": "https://talonsight.dev/ontology/pcomjr#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "http://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "pcomjr": "https://talonsight.dev/ontology/pcomjr#",
+
+    "id":             { "@id": "pcomjr:id",             "@type": "xsd:string" },
+    "hash":           { "@id": "pcomjr:hash",           "@type": "xsd:string" },
+    "timestamp":      { "@id": "pcomjr:timestamp",      "@type": "xsd:dateTime" },
+    "sourceTerminal": { "@id": "pcomjr:sourceTerminal", "@type": "@id" },
+    "workspace":      { "@id": "pcomjr:workspace",      "@type": "xsd:string" },
+    "sealed":         { "@id": "pcomjr:sealed",         "@type": "xsd:boolean" },
+
+    "Artifact": {
+      "@id": "pcomjr:Artifact",
+      "@context": {
+        "content":    { "@id": "pcomjr:content" },
+        "tags":       { "@id": "pcomjr:tags",       "@container": "@set" },
+        "derivedFrom":{ "@id": "pcomjr:derivedFrom", "@type": "@id" },
+        "createdBy":  { "@id": "pcomjr:createdBy",  "@type": "@id" },
+        "belongsTo":  { "@id": "pcomjr:belongsTo",  "@type": "@id" },
+        "verifiedBy": { "@id": "pcomjr:verifiedBy", "@type": "@id" }
+      }
+    },
+
+    "Decision": {
+      "@id": "pcomjr:Decision",
+      "subClassOf": "pcomjr:Artifact",
+      "@context": {
+        "hasContext":   { "@id": "pcomjr:hasContext",   "@type": "@id", "@container": "@set" },
+        "supportedBy":  { "@id": "pcomjr:supportedBy",  "@type": "@id", "@container": "@set" },
+        "outcome":      { "@id": "pcomjr:outcome" },
+        "confidence":   { "@id": "pcomjr:confidence",   "@type": "xsd:decimal" },
+        "participants": { "@id": "pcomjr:participants", "@container": "@set" },
+        "rationale":    { "@id": "pcomjr:rationale",    "@type": "xsd:string" }
+      }
+    },
+
+    "Context": {
+      "@id": "pcomjr:Context",
+      "@context": {
+        "conditions":   { "@id": "pcomjr:conditions" },
+        "environment":  { "@id": "pcomjr:environment" },
+        "constraints":  { "@id": "pcomjr:constraints",  "@container": "@set" },
+        "temporalScope":{ "@id": "pcomjr:temporalScope" },
+        "decisionId":   { "@id": "pcomjr:contextOf",    "@type": "@id" }
+      }
+    },
+
+    "Evidence": {
+      "@id": "pcomjr:Evidence",
+      "@context": {
+        "references":  { "@id": "pcomjr:references",  "@type": "@id", "@container": "@set" },
+        "description": { "@id": "pcomjr:description", "@type": "xsd:string" },
+        "weight":      { "@id": "pcomjr:weight",      "@type": "xsd:decimal" },
+        "evidenceType":{ "@id": "pcomjr:evidenceType", "@type": "xsd:string" }
+      }
+    },
+
+    "Verification": {
+      "@id": "pcomjr:Verification",
+      "@context": {
+        "artifactId":    { "@id": "pcomjr:verifies",     "@type": "@id" },
+        "ledgerEntryId": { "@id": "pcomjr:recordedIn",   "@type": "@id" },
+        "verifiedAt":    { "@id": "pcomjr:verifiedAt",    "@type": "xsd:dateTime" },
+        "verifiedBy":    { "@id": "pcomjr:verifiedByAgent","@type": "@id" },
+        "status":        { "@id": "pcomjr:verificationStatus", "@type": "xsd:string" },
+        "integrityHash": { "@id": "pcomjr:integrityHash", "@type": "xsd:string" }
+      }
+    },
+
+    "LedgerEntry": {
+      "@id": "pcomjr:LedgerEntry",
+      "@context": {
+        "artifactId":      { "@id": "pcomjr:ledgerArtifact",   "@type": "@id" },
+        "captureAgentId":  { "@id": "pcomjr:capturedBy",       "@type": "@id" },
+        "sequenceNumber":  { "@id": "pcomjr:sequenceNumber",   "@type": "xsd:integer" },
+        "previousEntryId": { "@id": "pcomjr:previousEntry",    "@type": "@id" }
+      }
+    },
+
+    "Pattern": {
+      "@id": "pcomjr:Pattern",
+      "@context": {
+        "decisionIds":  { "@id": "pcomjr:detectedIn",   "@type": "@id", "@container": "@set" },
+        "description":  { "@id": "pcomjr:patternDescription", "@type": "xsd:string" },
+        "frequency":    { "@id": "pcomjr:frequency",    "@type": "xsd:integer" },
+        "firstSeen":    { "@id": "pcomjr:firstSeen",    "@type": "xsd:dateTime" },
+        "lastSeen":     { "@id": "pcomjr:lastSeen",     "@type": "xsd:dateTime" },
+        "proposes":     { "@id": "pcomjr:proposes",     "@type": "@id" }
+      }
+    },
+
+    "WorkflowProposal": {
+      "@id": "pcomjr:WorkflowProposal",
+      "@context": {
+        "patternId":   { "@id": "pcomjr:derivedFromPattern", "@type": "@id" },
+        "steps":       { "@id": "pcomjr:workflowSteps",      "@container": "@list" },
+        "confidence":  { "@id": "pcomjr:proposalConfidence",  "@type": "xsd:decimal" },
+        "adoptedAt":   { "@id": "pcomjr:adoptedAt",           "@type": "xsd:dateTime" }
+      }
+    },
+
+    "Terminal": {
+      "@id": "pcomjr:Terminal",
+      "@context": {
+        "terminalName":  { "@id": "pcomjr:terminalName",  "@type": "xsd:string" },
+        "division":      { "@id": "pcomjr:division",      "@type": "xsd:string" },
+        "produces":      { "@id": "pcomjr:produces",      "@type": "@id", "@container": "@set" },
+        "emitsTo":       { "@id": "pcomjr:emitsTo",       "@type": "@id" }
+      }
+    },
+
+    "Workspace": {
+      "@id": "pcomjr:Workspace",
+      "@context": {
+        "workspaceName": { "@id": "pcomjr:workspaceName", "@type": "xsd:string" },
+        "terminal":      { "@id": "pcomjr:workspaceTerminal", "@type": "@id" },
+        "artifactCount": { "@id": "pcomjr:artifactCount", "@type": "xsd:integer" }
+      }
+    },
+
+    "Session": {
+      "@id": "pcomjr:Session",
+      "@context": {
+        "startedAt":   { "@id": "pcomjr:startedAt",   "@type": "xsd:dateTime" },
+        "endedAt":     { "@id": "pcomjr:endedAt",      "@type": "xsd:dateTime" },
+        "artifacts":   { "@id": "pcomjr:sessionArtifacts", "@type": "@id", "@container": "@set" },
+        "terminal":    { "@id": "pcomjr:sessionTerminal",  "@type": "@id" }
+      }
+    },
+
+    "Beat":              { "@id": "pcomjr:Beat",              "subClassOf": "pcomjr:Artifact" },
+    "Loop":              { "@id": "pcomjr:Loop",              "subClassOf": "pcomjr:Artifact" },
+    "FlowSession":       { "@id": "pcomjr:FlowSession",       "subClassOf": "pcomjr:Artifact" },
+    "FreestyleSession":  { "@id": "pcomjr:FreestyleSession",  "subClassOf": "pcomjr:Artifact" },
+    "LyricComposition":  { "@id": "pcomjr:LyricComposition",  "subClassOf": "pcomjr:Artifact" },
+    "ComicPanel":        { "@id": "pcomjr:ComicPanel",        "subClassOf": "pcomjr:Artifact" },
+    "ComicPage":         { "@id": "pcomjr:ComicPage",         "subClassOf": "pcomjr:Artifact" },
+    "CharacterSheet":    { "@id": "pcomjr:CharacterSheet",    "subClassOf": "pcomjr:Artifact" },
+    "LocationSheet":     { "@id": "pcomjr:LocationSheet",     "subClassOf": "pcomjr:Artifact" },
+    "AnimationClip":     { "@id": "pcomjr:AnimationClip",     "subClassOf": "pcomjr:Artifact" },
+    "MarketplaceListing":{ "@id": "pcomjr:MarketplaceListing","subClassOf": "pcomjr:Artifact" },
+    "LearningModule":    { "@id": "pcomjr:LearningModule",    "subClassOf": "pcomjr:Artifact" }
+  }
+}

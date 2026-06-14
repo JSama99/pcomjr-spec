@@ -1,0 +1,5 @@
+node_modules/
+
+# dist/ is NOT ignored — it's committed so that
+# `npm install github:JSama99/talonsight-ontology`
+# works on Replit without needing a build step.

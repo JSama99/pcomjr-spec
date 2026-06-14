@@ -1,0 +1,159 @@
+{
+  "$schema": "https://talonsight.dev/ontology/terminal-registry.schema.json",
+  "version": "1.0.0",
+  "description": "PCOMJR Terminal Registry — maps every TalonSight terminal to its ontological domain.",
+
+  "divisions": {
+    "CIAS": {
+      "name": "Creative Infrastructure As a Subscription",
+      "description": "Terminals that produce domain-specific creative artifacts. Creators subscribe to governed AI creative tools that remember their work, improve with use, and produce verifiable output.",
+      "terminals": ["sonic-genesis", "da-cypher", "talon-vision", "talon-motion", "talon-fly", "talon-learn"]
+    },
+    "OIAS": {
+      "name": "Organizational Infrastructure As a Subscription",
+      "description": "Platform systems that operate on the organizational meta-layer. Organizations subscribe to an intelligence layer that captures decisions, preserves knowledge, verifies work, and shows how everything connects.",
+      "terminals": ["artifact-memory", "decision-intelligence", "pow-ledger", "talon-agent"]
+    }
+  },
+
+  "terminals": [
+    {
+      "id": "sonic-genesis",
+      "name": "Sonic Genesis",
+      "division": "CIAS",
+      "description": "AI music generation platform — Loop Studio, Flow Mode, Lyria integration, stem separation.",
+      "produces": ["beat", "loop", "flow-session"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": [],
+      "version": "1.0.0"
+    },
+    {
+      "id": "da-cypher",
+      "name": "Da Cypher",
+      "division": "CIAS",
+      "description": "Freestyle rap training — Lyric Mode, Career Mode, five-signal progression engine, coaching dashboard.",
+      "produces": ["freestyle-session", "lyric-composition"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": [],
+      "version": "1.0.0"
+    },
+    {
+      "id": "talon-vision",
+      "name": "TalonVision",
+      "division": "CIAS",
+      "description": "Visual/comic generation — Nano Banana architecture, script-first workflow, outfit consistency, Location Sheets.",
+      "produces": ["comic-panel", "comic-page", "character-sheet", "location-sheet"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": ["TalonVisionExport v1.0"],
+      "version": "1.0.0"
+    },
+    {
+      "id": "talon-motion",
+      "name": "TalonMotion",
+      "division": "CIAS",
+      "description": "Video/animation — consumes TalonVisionExport v1.0, output artifact pipeline, POW session provenance.",
+      "produces": ["animation-clip"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": [],
+      "consumesContracts": ["TalonVisionExport v1.0"],
+      "version": "1.0.0"
+    },
+    {
+      "id": "talon-fly",
+      "name": "TalonFly",
+      "division": "CIAS",
+      "description": "Creator marketplace — purchase flow, provenance page, earnings dashboard, Afro-futuristic design system.",
+      "produces": ["marketplace-listing"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": [],
+      "version": "1.0.0"
+    },
+    {
+      "id": "talon-learn",
+      "name": "TalonLearn",
+      "division": "CIAS",
+      "description": "Educational content — curriculum system, POW emission layer, TalonLearnExport v1.0.",
+      "produces": ["learning-module"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "exportContracts": ["TalonLearnExport v1.0"],
+      "version": "1.0.0"
+    },
+    {
+      "id": "artifact-memory",
+      "name": "Artifact Memory",
+      "division": "OIAS",
+      "description": "Knowledge graph — ingests transcripts, extracts artifacts, D3 constellation visualization, session briefs.",
+      "produces": ["generic"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "layer": "Knowledge",
+      "layerQuestion": "What happened?",
+      "version": "1.0.0"
+    },
+    {
+      "id": "decision-intelligence",
+      "name": "Decision Intelligence OS",
+      "division": "OIAS",
+      "description": "Decision capture and analysis — Context/Evidence loop, pattern detection, workflow proposals.",
+      "produces": ["decision"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "layer": "Judgment",
+      "layerQuestion": "Why did we act?",
+      "version": "1.0.0"
+    },
+    {
+      "id": "pow-ledger",
+      "name": "POW Ledger",
+      "division": "OIAS",
+      "description": "Verification and proof — SHA-256 sealing, single-writer Capture Agent, immutable ledger, pattern-to-workflow pipeline.",
+      "produces": ["verification", "ledger-entry", "pattern", "workflow-proposal"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "layer": "Trust",
+      "layerQuestion": "Can we prove it?",
+      "version": "1.0.0",
+      "agents": [
+        { "name": "Orchestrator", "role": "Routes intent via A2A stream_query" },
+        { "name": "Capture Agent", "role": "Single-writer — only agent that mutates the ledger" },
+        { "name": "Verification Agent", "role": "Reads independently, verifies integrity, detects patterns" }
+      ]
+    },
+    {
+      "id": "talon-agent",
+      "name": "Talon Agent",
+      "division": "OIAS",
+      "description": "Mastra-based agent orchestration — event claiming, atomic transactions, cross-terminal coordination.",
+      "produces": ["generic"],
+      "memoryBusEndpoint": "/api/memory/events",
+      "version": "1.0.0"
+    }
+  ],
+
+  "relationships": {
+    "description": "Named relationships in the ontology and their cardinality constraints.",
+    "edges": [
+      { "name": "derivedFrom",  "from": "Artifact",      "to": "Artifact",      "cardinality": "0..*",  "description": "Provenance chain — what this artifact was built from." },
+      { "name": "hasContext",    "from": "Decision",      "to": "Context",       "cardinality": "1..*",  "description": "Every decision must preserve at least one context." },
+      { "name": "supportedBy",  "from": "Decision",      "to": "Evidence",      "cardinality": "1..*",  "description": "Every decision must cite at least one piece of evidence." },
+      { "name": "references",   "from": "Evidence",      "to": "Artifact",      "cardinality": "1..*",  "description": "Evidence must reference at least one existing artifact." },
+      { "name": "verifies",     "from": "Verification",  "to": "Artifact",      "cardinality": "1..1",  "description": "Each verification proves exactly one artifact." },
+      { "name": "recordedIn",   "from": "Verification",  "to": "LedgerEntry",   "cardinality": "1..1",  "description": "Each verification is recorded in exactly one ledger entry." },
+      { "name": "detectedIn",   "from": "Pattern",       "to": "Decision",      "cardinality": "2..*",  "description": "A pattern requires at least two matching decisions." },
+      { "name": "proposes",     "from": "Pattern",       "to": "WorkflowProposal","cardinality": "0..1", "description": "A pattern may propose one reusable workflow." },
+      { "name": "produces",     "from": "Terminal",      "to": "ArtifactType",  "cardinality": "1..*",  "description": "Each terminal produces at least one artifact type." },
+      { "name": "emitsTo",      "from": "Terminal",      "to": "MemoryBus",     "cardinality": "1..1",  "description": "Every terminal emits to the Memory Bus." },
+      { "name": "belongsTo",    "from": "Artifact",      "to": "Workspace",     "cardinality": "1..1",  "description": "Every artifact belongs to exactly one workspace." }
+    ]
+  },
+
+  "pcomjrMapping": {
+    "description": "How the PCOMJR pipeline stages map to ontological layers.",
+    "stages": [
+      { "stage": "Pipeline",     "ontologyLayer": "Process",     "governs": "How work flows between terminals and systems." },
+      { "stage": "Context",      "ontologyLayer": "Situational", "governs": "Conditions under which decisions are made." },
+      { "stage": "Orchestrator", "ontologyLayer": "Agent",       "governs": "Who routes what — agent identity and authority." },
+      { "stage": "Model",        "ontologyLayer": "Capability",  "governs": "What can reason — model selection and constraints." },
+      { "stage": "Judgment",     "ontologyLayer": "Decision",    "governs": "What was decided — the Decision entity." },
+      { "stage": "Artifact",     "ontologyLayer": "Output",      "governs": "What was produced — the base Artifact and all subclasses." },
+      { "stage": "Reliability",  "ontologyLayer": "Trust",       "governs": "Can we verify it — Verification, LedgerEntry, integrity." }
+    ]
+  }
+}
