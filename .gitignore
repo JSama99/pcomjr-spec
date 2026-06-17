@@ -1,0 +1,28 @@
+# Node
+node_modules/
+ontology/dist/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated (tracked via generate scripts, but ignore build artifacts)
+# Note: ontology/src/generated/ and python/talonsight_ontology/generated/ ARE tracked —
+# they are committed outputs of the code generators, not build artifacts.

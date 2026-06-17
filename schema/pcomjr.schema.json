@@ -1,0 +1,2399 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://talonsight.dev/schema/pcomjr.schema.json",
+  "title": "PCOMJR Data Ontology",
+  "description": "Canonical type definitions for the TalonSight Technologies PCOMJR pipeline. This file is the single source of truth \u2014 TypeScript interfaces and Python Pydantic models are generated from it.",
+  "type": "object",
+  "$defs": {
+    "Division": {
+      "type": "string",
+      "enum": [
+        "cias",
+        "oias"
+      ],
+      "description": "CIAS = Creative Infrastructure As a Subscription. OIAS = Organizational Infrastructure As a Subscription."
+    },
+    "CIASTerminalId": {
+      "type": "string",
+      "enum": [
+        "sonic-genesis",
+        "da-cypher",
+        "talonvision",
+        "talonmotion",
+        "talonfly"
+      ],
+      "description": "Identifiers for the five CIAS creative terminals."
+    },
+    "OIASSystemId": {
+      "type": "string",
+      "enum": [
+        "artifact-memory",
+        "decision-intelligence",
+        "pow-ledger",
+        "talon-agent",
+        "talon-llm"
+      ],
+      "description": "Identifiers for OIAS infrastructure systems."
+    },
+    "TerminalId": {
+      "description": "Any terminal or system in the TST ecosystem.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CIASTerminalId"
+        },
+        {
+          "$ref": "#/$defs/OIASSystemId"
+        }
+      ]
+    },
+    "CIASArtifactType": {
+      "type": "string",
+      "enum": [
+        "beat",
+        "loop",
+        "stem-bundle",
+        "mix-export",
+        "arrangement",
+        "flow-session",
+        "freestyle-session",
+        "battle-recording",
+        "lyric-composition",
+        "progression-signal",
+        "comic-panel",
+        "comic-page",
+        "character-sheet",
+        "location-sheet",
+        "talonvision-export",
+        "animation-clip",
+        "motion-sequence",
+        "marketplace-listing",
+        "creator-profile",
+        "learning-module",
+        "curriculum"
+      ],
+      "description": "Artifact types produced by CIAS terminals."
+    },
+    "OIASArtifactType": {
+      "type": "string",
+      "enum": [
+        "decision",
+        "context",
+        "evidence",
+        "verification",
+        "knowledge-node",
+        "session-brief",
+        "transcript-ingestion",
+        "ledger-entry",
+        "seal-event",
+        "audit-entry",
+        "pattern",
+        "workflow-proposal",
+        "agent-task",
+        "event-claim",
+        "a2a-message",
+        "constellation-cluster"
+      ],
+      "description": "Artifact types produced by OIAS systems."
+    },
+    "ArtifactType": {
+      "description": "Union of all artifact types across both divisions.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CIASArtifactType"
+        },
+        {
+          "$ref": "#/$defs/OIASArtifactType"
+        }
+      ]
+    },
+    "VerificationStatus": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pending",
+        "verified",
+        "tampered",
+        "expired"
+      ],
+      "description": "Lifecycle status of an artifact's cryptographic verification."
+    },
+    "EvidenceType": {
+      "type": "string",
+      "enum": [
+        "document",
+        "data",
+        "analysis",
+        "precedent",
+        "expert_input",
+        "metric",
+        "external"
+      ],
+      "description": "Classification of evidence supporting a decision."
+    },
+    "DecisionStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "rejected",
+        "implemented",
+        "verified",
+        "archived"
+      ],
+      "description": "Lifecycle status of a decision."
+    },
+    "DecisionType": {
+      "type": "string",
+      "enum": [
+        "strategic",
+        "operational",
+        "architectural",
+        "tactical",
+        "governance"
+      ],
+      "description": "Classification of organizational decisions."
+    },
+    "RelationType": {
+      "type": "string",
+      "enum": [
+        "derived-from",
+        "supersedes",
+        "conflicts-with",
+        "references",
+        "implements",
+        "validates",
+        "influenced-by",
+        "enables",
+        "contradicts",
+        "relates-to"
+      ],
+      "description": "Typed relationships between artifacts in the knowledge graph."
+    },
+    "KnowledgeCategory": {
+      "type": "string",
+      "enum": [
+        "architecture",
+        "decision",
+        "bug-fix",
+        "feature",
+        "pattern",
+        "requirement",
+        "insight",
+        "blocker",
+        "milestone",
+        "question",
+        "action-item"
+      ],
+      "description": "Classification of knowledge artifacts extracted from transcripts."
+    },
+    "A2AIntent": {
+      "type": "string",
+      "enum": [
+        "capture",
+        "verify",
+        "query",
+        "pattern_detect",
+        "stream_query"
+      ],
+      "description": "Intent types for Agent-to-Agent protocol messages."
+    },
+    "MemoryBusEventType": {
+      "type": "string",
+      "enum": [
+        "artifact.created",
+        "artifact.updated",
+        "artifact.verified",
+        "artifact.sealed",
+        "artifact.superseded",
+        "decision.created",
+        "decision.sealed",
+        "decision.verified",
+        "pattern.detected",
+        "workflow.proposed"
+      ],
+      "description": "Event types flowing through the Memory Bus."
+    },
+    "Artifact": {
+      "type": "object",
+      "description": "Base artifact \u2014 the fundamental unit of work output in the PCOMJR pipeline. Every creative or organizational output is an artifact.",
+      "required": [
+        "id",
+        "type",
+        "hash",
+        "timestamp",
+        "sourceTerminal",
+        "workspace",
+        "sealed",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique artifact identifier."
+        },
+        "type": {
+          "$ref": "#/$defs/ArtifactType",
+          "description": "Artifact type classification."
+        },
+        "sourceTerminal": {
+          "$ref": "#/$defs/TerminalId",
+          "description": "The terminal that produced this artifact."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Freeform tags for discovery."
+        },
+        "powHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of the canonical artifact representation."
+        },
+        "powAnchoredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the artifact was anchored to the POW Ledger."
+        },
+        "powEventId": {
+          "type": "string",
+          "description": "Reference to the POW Ledger event that anchored this artifact."
+        },
+        "verificationStatus": {
+          "$ref": "#/$defs/VerificationStatus",
+          "description": "Current verification state."
+        },
+        "hash": {
+          "type": "string",
+          "description": "SHA-256 hex hash of the canonical content representation."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC creation timestamp."
+        },
+        "workspace": {
+          "type": "string",
+          "description": "Workspace or context that produced this artifact."
+        },
+        "sealed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the artifact has been sealed to the POW Ledger."
+        },
+        "content": {
+          "type": "object",
+          "description": "Type-specific content fields."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Context": {
+      "type": "object",
+      "description": "Structured context record \u2014 captures the conditions under which a decision was made. PCOMJR Stage 2.",
+      "required": [
+        "id",
+        "objective"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What success looks like."
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "What cannot change."
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "What is believed true but unverified."
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "What could go wrong."
+        },
+        "environment": {
+          "type": "string",
+          "description": "The technical, organizational, or market conditions."
+        },
+        "timeframe": {
+          "type": "string",
+          "description": "When this context is valid."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Evidence": {
+      "type": "object",
+      "description": "A piece of evidence supporting a decision. PCOMJR Stage 3 (Orchestrator output).",
+      "required": [
+        "id",
+        "type",
+        "title",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "type": {
+          "$ref": "#/$defs/EvidenceType"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content": {
+          "type": "string",
+          "description": "The evidence body text or summary."
+        },
+        "source": {
+          "type": "string",
+          "description": "Where this evidence came from."
+        },
+        "attachmentUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to supporting material."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How reliable this evidence is."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Alternative": {
+      "type": "object",
+      "description": "An alternative considered and rejected during decision-making.",
+      "required": [
+        "id",
+        "title",
+        "rejectionReason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "rejectionReason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "Decision": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "decision"
+            },
+            "content": {
+              "$ref": "#/$defs/DecisionContent"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "description": "An organizational decision \u2014 the core entity of the PCOMJR Judgment stage. Extends Artifact with decision-specific fields."
+    },
+    "LedgerEntry": {
+      "type": "object",
+      "description": "An entry in the POW Ledger \u2014 a tamper-evident record linking an artifact to its cryptographic proof.",
+      "required": [
+        "id",
+        "artifactId",
+        "artifactHash",
+        "artifactType",
+        "timestamp"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "artifactId": {
+          "type": "string",
+          "description": "ID of the artifact being recorded."
+        },
+        "artifactHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of the canonical artifact."
+        },
+        "artifactType": {
+          "type": "string",
+          "description": "Type of the recorded artifact."
+        },
+        "signature": {
+          "type": "string",
+          "description": "Chain link \u2014 hash incorporating the previous entry."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "source": {
+          "$ref": "#/$defs/TerminalId",
+          "description": "Which terminal or system created this entry."
+        }
+      },
+      "additionalProperties": false
+    },
+    "SealEvent": {
+      "type": "object",
+      "description": "Event emitted when a decision is sealed \u2014 cryptographically committed to the POW Ledger.",
+      "required": [
+        "eventId",
+        "decisionId",
+        "hash",
+        "sealedAt",
+        "sealedBy"
+      ],
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "decisionId": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sealedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sealedBy": {
+          "type": "string"
+        },
+        "ledgerEntryId": {
+          "type": "string"
+        },
+        "previousHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Verification": {
+      "type": "object",
+      "description": "A verification record \u2014 proves an artifact existed in a specific form at a specific time.",
+      "required": [
+        "id",
+        "artifactId",
+        "hash",
+        "status",
+        "verifiedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "artifactId": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verifiedBy": {
+          "type": "string"
+        },
+        "discrepancies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Pattern": {
+      "type": "object",
+      "description": "A detected pattern across multiple decisions or artifacts.",
+      "required": [
+        "id",
+        "name",
+        "patternType",
+        "occurrences",
+        "detectedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "patternType": {
+          "type": "string",
+          "enum": [
+            "recurring_success",
+            "recurring_failure",
+            "overconfidence",
+            "underconfidence",
+            "process_gap",
+            "workflow_candidate"
+          ]
+        },
+        "occurrences": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifactIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "detectedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recommendation": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WorkflowProposal": {
+      "type": "object",
+      "description": "A proposed reusable workflow derived from detected patterns.",
+      "required": [
+        "id",
+        "name",
+        "steps",
+        "sourcePatternId"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WorkflowStep"
+          },
+          "minItems": 1
+        },
+        "sourcePatternId": {
+          "type": "string"
+        },
+        "proposedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "accepted",
+            "rejected",
+            "active"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "WorkflowStep": {
+      "type": "object",
+      "required": [
+        "order",
+        "action",
+        "stage"
+      ],
+      "properties": {
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "pipeline",
+            "context",
+            "orchestrator",
+            "model",
+            "judgment",
+            "artifact",
+            "reliability"
+          ]
+        },
+        "assignee": {
+          "type": "string"
+        },
+        "requiredEvidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Beat": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "beat"
+            },
+            "sourceTerminal": {
+              "const": "sonic-genesis"
+            },
+            "content": {
+              "$ref": "#/$defs/BeatContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A musical beat \u2014 Sonic Genesis artifact."
+    },
+    "Loop": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "loop"
+            },
+            "sourceTerminal": {
+              "const": "sonic-genesis"
+            },
+            "content": {
+              "$ref": "#/$defs/LoopContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A multi-section loop arrangement \u2014 Sonic Genesis Loop Studio artifact."
+    },
+    "LoopSection": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "order",
+        "duration"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "audioUrl": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FreestyleSession": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "freestyle-session"
+            },
+            "sourceTerminal": {
+              "const": "da-cypher"
+            },
+            "content": {
+              "$ref": "#/$defs/FreestyleSessionContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A freestyle rap session \u2014 Da Cypher artifact."
+    },
+    "LyricComposition": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "lyric-composition"
+            },
+            "sourceTerminal": {
+              "const": "da-cypher"
+            },
+            "content": {
+              "$ref": "#/$defs/LyricCompositionContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A written lyric composition \u2014 Da Cypher Lyric Mode artifact."
+    },
+    "LyricVerse": {
+      "type": "object",
+      "required": [
+        "id",
+        "content",
+        "verseOrder"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sectionType": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "verseOrder": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "barCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "syllableCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "ProgressionSignal": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "progression-signal"
+            },
+            "sourceTerminal": {
+              "const": "da-cypher"
+            },
+            "content": {
+              "$ref": "#/$defs/ProgressionSignalContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A skill progression signal \u2014 Da Cypher training artifact."
+    },
+    "ComicPanel": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "comic-panel"
+            },
+            "sourceTerminal": {
+              "const": "talonvision"
+            },
+            "content": {
+              "$ref": "#/$defs/ComicPanelContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A single comic panel \u2014 TalonVision artifact."
+    },
+    "ComicPage": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "comic-page"
+            },
+            "sourceTerminal": {
+              "const": "talonvision"
+            },
+            "content": {
+              "$ref": "#/$defs/ComicPageContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A full comic page containing multiple panels \u2014 TalonVision artifact."
+    },
+    "CharacterSheet": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "character-sheet"
+            },
+            "sourceTerminal": {
+              "const": "talonvision"
+            },
+            "content": {
+              "$ref": "#/$defs/CharacterSheetContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A character design sheet \u2014 TalonVision artifact."
+    },
+    "LocationSheet": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "location-sheet"
+            },
+            "sourceTerminal": {
+              "const": "talonvision"
+            },
+            "content": {
+              "$ref": "#/$defs/LocationSheetContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A location/environment design sheet \u2014 TalonVision artifact."
+    },
+    "AnimationClip": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "animation-clip"
+            },
+            "sourceTerminal": {
+              "const": "talonmotion"
+            },
+            "content": {
+              "$ref": "#/$defs/AnimationClipContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "An animation or video clip \u2014 TalonMotion artifact."
+    },
+    "MarketplaceListing": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "marketplace-listing"
+            },
+            "sourceTerminal": {
+              "const": "talonfly"
+            },
+            "content": {
+              "$ref": "#/$defs/MarketplaceListingContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A marketplace listing \u2014 TalonFly artifact."
+    },
+    "LearningModule": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "learning-module"
+            },
+            "content": {
+              "$ref": "#/$defs/LearningModuleContent"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "description": "A learning module \u2014 TalonLearn artifact."
+    },
+    "KnowledgeNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "knowledge-node"
+            },
+            "sourceTerminal": {
+              "const": "artifact-memory"
+            },
+            "content": {
+              "$ref": "#/$defs/KnowledgeNodeContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A node in the Artifact Memory knowledge graph \u2014 extracted from AI chat transcripts."
+    },
+    "RelationshipEdge": {
+      "type": "object",
+      "description": "An edge in the knowledge graph connecting two artifacts or knowledge nodes.",
+      "required": [
+        "id",
+        "sourceId",
+        "targetId",
+        "relationType"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "relationType": {
+          "$ref": "#/$defs/RelationType"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "detectedBy": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "temporal",
+            "ai_extraction",
+            "cross_reference"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "SessionBrief": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "session-brief"
+            },
+            "sourceTerminal": {
+              "const": "artifact-memory"
+            },
+            "content": {
+              "$ref": "#/$defs/SessionBriefContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A generated summary of a workspace's artifacts \u2014 produced by Artifact Memory."
+    },
+    "ConstellationCluster": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "constellation-cluster"
+            },
+            "sourceTerminal": {
+              "const": "artifact-memory"
+            },
+            "content": {
+              "$ref": "#/$defs/ConstellationClusterContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "A cluster in the constellation visualization \u2014 groups artifacts by workspace or origin."
+    },
+    "TranscriptIngestion": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "transcript-ingestion"
+            },
+            "sourceTerminal": {
+              "const": "artifact-memory"
+            },
+            "content": {
+              "$ref": "#/$defs/TranscriptIngestionContent"
+            }
+          },
+          "required": [
+            "type",
+            "sourceTerminal",
+            "content"
+          ]
+        }
+      ],
+      "description": "Metadata for a transcript ingestion job in Artifact Memory."
+    },
+    "AuditTrail": {
+      "type": "object",
+      "description": "A complete audit trail for an artifact \u2014 all ledger entries and verifications.",
+      "required": [
+        "artifactId",
+        "entries"
+      ],
+      "properties": {
+        "artifactId": {
+          "type": "string"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AuditEntry"
+          }
+        },
+        "integrityStatus": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "lastVerified": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AuditEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "action",
+        "timestamp",
+        "actor"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "IntegrityReport": {
+      "type": "object",
+      "description": "Result of verifying an artifact's integrity against the POW Ledger.",
+      "required": [
+        "artifactId",
+        "status",
+        "checkedAt"
+      ],
+      "properties": {
+        "artifactId": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "expectedHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "actualHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "chainValid": {
+          "type": "boolean"
+        },
+        "discrepancies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "A2AMessage": {
+      "type": "object",
+      "description": "Agent-to-Agent protocol message \u2014 used for inter-agent communication in the POW Ledger system.",
+      "required": [
+        "messageId",
+        "intent",
+        "source",
+        "target",
+        "payload",
+        "timestamp"
+      ],
+      "properties": {
+        "messageId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "intent": {
+          "$ref": "#/$defs/A2AIntent"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source agent identifier."
+        },
+        "target": {
+          "type": "string",
+          "description": "Target agent identifier."
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "correlationId": {
+          "type": "string",
+          "description": "Links related messages across agents."
+        },
+        "responseTo": {
+          "type": "string",
+          "description": "MessageId this is responding to."
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentIdentity": {
+      "type": "object",
+      "description": "Identity record for a Talon Agent.",
+      "required": [
+        "agentId",
+        "name",
+        "capabilities"
+      ],
+      "properties": {
+        "agentId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentPermission"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "suspended",
+            "decommissioned"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentPermission": {
+      "type": "object",
+      "required": [
+        "resource",
+        "actions"
+      ],
+      "properties": {
+        "resource": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write",
+              "execute",
+              "delegate"
+            ]
+          }
+        },
+        "conditions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "EventClaim": {
+      "type": "object",
+      "description": "An agent's claim on an event for processing \u2014 uses atomic SELECT FOR UPDATE SKIP LOCKED.",
+      "required": [
+        "eventId",
+        "agentId",
+        "claimedAt",
+        "status"
+      ],
+      "properties": {
+        "eventId": {
+          "type": "string"
+        },
+        "agentId": {
+          "type": "string"
+        },
+        "claimedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "claimed",
+            "processing",
+            "completed",
+            "failed",
+            "expired"
+          ]
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "TaskDelegation": {
+      "type": "object",
+      "description": "A task delegated from the orchestrator to a specialist agent.",
+      "required": [
+        "taskId",
+        "fromAgent",
+        "toAgent",
+        "instruction",
+        "delegatedAt"
+      ],
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "fromAgent": {
+          "type": "string"
+        },
+        "toAgent": {
+          "type": "string"
+        },
+        "instruction": {
+          "type": "string"
+        },
+        "delegatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "low",
+            "normal",
+            "high",
+            "critical"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "accepted",
+            "in_progress",
+            "completed",
+            "failed"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "OrchestratorRouting": {
+      "type": "object",
+      "description": "Routing decision made by the orchestrator agent \u2014 which agent handles which intent.",
+      "required": [
+        "intent",
+        "selectedAgent",
+        "confidence"
+      ],
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/A2AIntent"
+        },
+        "selectedAgent": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "alternativeAgents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routingReason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TerminalRegistration": {
+      "type": "object",
+      "description": "Registration record for a terminal in the TST ecosystem.",
+      "required": [
+        "terminalId",
+        "name",
+        "division",
+        "artifactTypes"
+      ],
+      "properties": {
+        "terminalId": {
+          "$ref": "#/$defs/TerminalId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "division": {
+          "$ref": "#/$defs/Division"
+        },
+        "description": {
+          "type": "string"
+        },
+        "artifactTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Artifact types this terminal is authorized to produce."
+        },
+        "version": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "maintenance",
+            "deprecated"
+          ]
+        },
+        "endpoint": {
+          "type": "string",
+          "format": "uri"
+        },
+        "memoryBusEnabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "MemoryBusEvent": {
+      "type": "object",
+      "description": "An event flowing through the Memory Bus \u2014 the central ingestion pathway for all artifact events across the TST ecosystem.",
+      "required": [
+        "eventId",
+        "eventType",
+        "eventTimestamp",
+        "source",
+        "payload",
+        "artifactClass"
+      ],
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique event identifier."
+        },
+        "eventType": {
+          "$ref": "#/$defs/MemoryBusEventType",
+          "description": "What happened."
+        },
+        "eventTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When it happened (ISO 8601 UTC)."
+        },
+        "source": {
+          "$ref": "#/$defs/TerminalId",
+          "description": "Which terminal emitted this event."
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "The artifact or entity being reported."
+        },
+        "artifactClass": {
+          "type": "string",
+          "description": "The artifact type for routing (e.g. 'beat', 'decision', 'knowledge_node')."
+        },
+        "correlationId": {
+          "type": "string",
+          "description": "Links related events across systems."
+        },
+        "powHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Hash of the payload for integrity verification."
+        }
+      },
+      "additionalProperties": false
+    },
+    "AnimationClipContent": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "resolution": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
+        },
+        "fps": {
+          "type": "number"
+        },
+        "videoUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sourcePackageId": {
+          "type": "string",
+          "description": "TalonVisionExport package this was rendered from."
+        }
+      },
+      "required": [
+        "duration"
+      ]
+    },
+    "BeatContent": {
+      "type": "object",
+      "properties": {
+        "bpm": {
+          "type": "number",
+          "minimum": 20,
+          "maximum": 400
+        },
+        "key": {
+          "type": "string",
+          "description": "Musical key, e.g. 'C minor'."
+        },
+        "scale": {
+          "type": "string"
+        },
+        "genre": {
+          "type": "string"
+        },
+        "mood": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Duration in seconds."
+        },
+        "stemUrls": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Map of stem name to URL."
+        },
+        "generationModel": {
+          "type": "string",
+          "description": "Which model generated this beat."
+        },
+        "generationPrompt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "bpm",
+        "duration"
+      ]
+    },
+    "CharacterSheetContent": {
+      "type": "object",
+      "properties": {
+        "characterName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "characterId": {
+          "type": "string"
+        },
+        "referenceImages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "designNotes": {
+          "type": "string"
+        },
+        "canonicalSeed": {
+          "type": "integer",
+          "description": "Seed for reproducible generation."
+        },
+        "outfits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "voiceCasting": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "characterName"
+      ]
+    },
+    "ComicPageContent": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "pageNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "panels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ComicPanel"
+          },
+          "minItems": 1
+        },
+        "layoutType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pageNumber",
+        "panels"
+      ]
+    },
+    "ComicPanelContent": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "pageNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "panelNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sceneId": {
+          "type": "string"
+        },
+        "dialogueText": {
+          "type": "string"
+        },
+        "actionText": {
+          "type": "string"
+        },
+        "characterIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "generationPrompt": {
+          "type": "string"
+        },
+        "generationModel": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pageNumber",
+        "panelNumber"
+      ]
+    },
+    "DecisionContent": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The decision that was made."
+        },
+        "decisionType": {
+          "$ref": "#/$defs/DecisionType"
+        },
+        "status": {
+          "$ref": "#/$defs/DecisionStatus"
+        },
+        "contexts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Context"
+          },
+          "minItems": 1,
+          "description": "At least one context record is required."
+        },
+        "evidences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "description": "At least one piece of evidence is required."
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Alternative"
+          },
+          "description": "Alternatives considered and rejected."
+        },
+        "confidenceLevel": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Predicted confidence in the decision's success."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Who owns this decision."
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "successScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Measured success after implementation."
+        },
+        "impactScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Measured organizational impact."
+        },
+        "lessonsLearned": {
+          "type": "string",
+          "description": "Post-implementation lessons."
+        },
+        "unexpectedConsequences": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "outcome",
+        "decisionType",
+        "status",
+        "contexts",
+        "evidences"
+      ]
+    },
+    "FreestyleSessionContent": {
+      "type": "object",
+      "properties": {
+        "beatId": {
+          "type": "string",
+          "description": "ID of the beat used."
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Session duration in seconds."
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "transcript": {
+          "type": "string",
+          "description": "Transcribed lyrics."
+        },
+        "flowScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "rhymeScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "deliveryScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "overallScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "skillSignals": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "duration"
+      ]
+    },
+    "LearningModuleContent": {
+      "type": "object",
+      "properties": {
+        "curriculum": {
+          "type": "string"
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": [
+            "beginner",
+            "intermediate",
+            "advanced",
+            "expert"
+          ]
+        },
+        "estimatedMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "objectives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LocationSheetContent": {
+      "type": "object",
+      "properties": {
+        "locationName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environmentType": {
+          "type": "string"
+        },
+        "referenceImages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "designNotes": {
+          "type": "string"
+        },
+        "atmosphericPrompt": {
+          "type": "string",
+          "description": "Prefix/suffix prompt for atmospheric generation."
+        }
+      },
+      "required": [
+        "locationName"
+      ]
+    },
+    "LoopContent": {
+      "type": "object",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LoopSection"
+          },
+          "minItems": 1
+        },
+        "totalDuration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "masterBpm": {
+          "type": "number",
+          "minimum": 20,
+          "maximum": 400
+        }
+      },
+      "required": [
+        "sections"
+      ]
+    },
+    "LyricCompositionContent": {
+      "type": "object",
+      "properties": {
+        "beatId": {
+          "type": "string"
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "mood": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "totalBars": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalWords": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LyricVerse"
+          }
+        }
+      },
+      "required": [
+        "totalBars",
+        "totalWords"
+      ]
+    },
+    "MarketplaceListingContent": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD"
+        },
+        "artifactRef": {
+          "type": "string",
+          "description": "ID of the artifact being listed."
+        },
+        "creatorId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "active",
+            "sold",
+            "delisted"
+          ]
+        },
+        "provenanceHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "price",
+        "currency"
+      ]
+    },
+    "ProgressionSignalContent": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string"
+        },
+        "signalType": {
+          "type": "string",
+          "enum": [
+            "weakness",
+            "staleness",
+            "ceiling_plateau",
+            "streak_continuation",
+            "near_mastery"
+          ]
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "skillId",
+        "signalType",
+        "value"
+      ]
+    },
+    "KnowledgeNodeContent": {
+      "type": "object",
+      "properties": {
+        "statement": {
+          "type": "string",
+          "description": "The extracted knowledge statement."
+        },
+        "category": {
+          "$ref": "#/$defs/KnowledgeCategory"
+        },
+        "extractionConfidence": {
+          "type": "number",
+          "description": "Confidence in extraction accuracy (0.0-1.0)."
+        },
+        "sourceSessionId": {
+          "type": "string",
+          "description": "Source transcript or session ID."
+        },
+        "originTerminal": {
+          "$ref": "#/$defs/TerminalId",
+          "description": "Terminal where the original work occurred."
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Entity names mentioned."
+        },
+        "relatedNodeIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Related knowledge node IDs."
+        }
+      },
+      "required": [
+        "statement",
+        "category",
+        "extractionConfidence",
+        "sourceSessionId"
+      ]
+    },
+    "SessionBriefContent": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Human-readable session title."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Executive summary (2-3 sentences)."
+        },
+        "decisionsIdentified": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Key decisions made."
+        },
+        "artifactsProduced": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Artifacts produced or modified."
+        },
+        "openItems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unresolved items or open questions."
+        },
+        "terminalsInvolved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerminalId"
+          },
+          "description": "Terminals involved."
+        },
+        "nodeCount": {
+          "type": "integer",
+          "description": "Knowledge nodes extracted."
+        },
+        "generationModel": {
+          "type": "string",
+          "description": "Model used for brief generation."
+        }
+      },
+      "required": [
+        "title",
+        "summary"
+      ]
+    },
+    "ConstellationClusterContent": {
+      "type": "object",
+      "properties": {
+        "workspaceName": {
+          "type": "string",
+          "description": "Workspace this cluster represents."
+        },
+        "terminal": {
+          "$ref": "#/$defs/TerminalId",
+          "description": "Terminal this workspace belongs to."
+        },
+        "artifactCount": {
+          "type": "integer",
+          "description": "Number of artifacts in this cluster."
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex color for the cluster."
+        },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": [
+        "workspaceName",
+        "terminal",
+        "artifactCount",
+        "color"
+      ]
+    },
+    "TranscriptIngestionContent": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "processing",
+            "completed",
+            "failed"
+          ]
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "artifactsExtracted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "chunksProcessed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "sessionId",
+        "status",
+        "startedAt"
+      ]
+    }
+  }
+}

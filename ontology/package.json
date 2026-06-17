@@ -1,0 +1,50 @@
+{
+  "name": "@talonsight/ontology",
+  "version": "1.0.0",
+  "description": "PCOMJR Data Ontology — TypeScript types, validators, and canonical hashing for TalonSight Technologies",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./hash": {
+      "types": "./dist/hash.d.ts",
+      "import": "./dist/hash.js"
+    },
+    "./constraints": {
+      "types": "./dist/constraints.d.ts",
+      "import": "./dist/constraints.js"
+    },
+    "./guards": {
+      "types": "./dist/generated/guards.d.ts",
+      "import": "./dist/generated/guards.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "generate": "tsx scripts/generate.ts",
+    "build": "npm run generate && tsc",
+    "test": "tsx test/verify-hash-vectors.ts && tsx test/constraints.test.ts",
+    "test:hash": "tsx test/verify-hash-vectors.ts",
+    "test:constraints": "tsx test/constraints.test.ts",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.21",
+    "tsx": "^4.22.4",
+    "typescript": "5.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JSama99/pcomjr-spec.git",
+    "directory": "ontology"
+  },
+  "author": "Jermaine Nelson <jsama@talonsight.dev>",
+  "license": "CC-BY-4.0"
+}
