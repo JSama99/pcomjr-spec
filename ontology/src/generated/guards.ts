@@ -3,7 +3,7 @@
  * 
  * AUTO-GENERATED from schema/pcomjr.schema.json
  * DO NOT EDIT MANUALLY — run `npm run generate` to regenerate.
- * Generated: 2026-06-16T18:19:39.416Z
+ * Generated: 2026-06-21T18:23:03.522Z
  */
 
 import type { Artifact, AnimationClip, Beat, CharacterSheet, ComicPage, ComicPanel, ConstellationCluster, Decision, FreestyleSession, KnowledgeNode, LearningModule, LocationSheet, Loop, LyricComposition, MarketplaceListing, ProgressionSignal, SessionBrief, TranscriptIngestion } from './types.js';
